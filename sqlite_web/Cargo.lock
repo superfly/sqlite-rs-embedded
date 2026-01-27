@@ -232,7 +232,12 @@ name = "sqlite_web"
 version = "0.1.0"
 dependencies = [
  "sqlite_nostd",
+ "stable_trap",
 ]
+
+[[package]]
+name = "stable_trap"
+version = "0.1.0"
 
 [[package]]
 name = "syn"

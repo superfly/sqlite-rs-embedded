@@ -16,3 +16,8 @@ sqlite3_capi = {version="0.1.0", path="../sqlite3_capi"}
 
 # dev dependencies for examples
 [dev-dependencies]
+
+[features]
+loadable_extension = ["sqlite3_capi/loadable_extension"]
+static = ["sqlite3_capi/static"]
+omit_load_extension = ["sqlite3_capi/omit_load_extension"]
