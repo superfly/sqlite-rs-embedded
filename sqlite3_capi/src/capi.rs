@@ -547,6 +547,9 @@ pub fn value_text<'a>(arg1: *mut value) -> &'a str {
     unsafe {
         let len = value_bytes(arg1);
         let bytes = invoke_sqlite!(value_text, arg1);
+        if bytes.is_null() {
+            return "";
+        }
         let slice = core::slice::from_raw_parts(bytes as *const u8, len as usize);
         core::str::from_utf8_unchecked(slice)
     }
@@ -564,6 +567,9 @@ pub fn value_blob<'a>(value: *mut value) -> &'a [u8] {
     unsafe {
         let n = value_bytes(value);
         let b = invoke_sqlite!(value_blob, value);
+        if b.is_null() {
+            return &[];
+        }
         core::slice::from_raw_parts(b.cast::<u8>(), n as usize)
     }
 }
