@@ -17,4 +17,5 @@ stable_trap = { path="../stable_trap" }
 [features]
 loadable_extension = ["sqlite_nostd/loadable_extension"]
 static = ["sqlite_nostd/static"]
+nightly = ["stable_trap/nightly"]
 

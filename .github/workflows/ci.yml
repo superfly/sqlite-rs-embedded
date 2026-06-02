@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  fmt:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: rustup component add rustfmt
+      - run: cargo fmt --all --check
+
+  check:
+    name: Check (${{ matrix.crate }}, ${{ matrix.features }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - crate: sqlite3_capi
+            features: static
+          - crate: sqlite3_capi
+            features: loadable_extension
+          - crate: sqlite3_capi
+            features: "static,omit_load_extension"
+          - crate: sqlite_nostd
+            features: static
+          - crate: sqlite_nostd
+            features: loadable_extension
+          - crate: sqlite_web
+            features: static
+          - crate: sqlite_web
+            features: loadable_extension
+          - crate: sqlite3_allocator
+            features: static
+          - crate: sqlite3_allocator
+            features: loadable_extension
+          - crate: stable_trap
+            features: ""
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install libclang (for bindgen)
+        if: matrix.crate == 'sqlite3_capi'
+        run: sudo apt-get update && sudo apt-get install -y libclang-dev
+      - run: |
+          cd ${{ matrix.crate }}
+          cargo check --features "${{ matrix.features }}"
